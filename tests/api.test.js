@@ -5,7 +5,7 @@ describe('API Anything Ipsum', () => {
   test('GET /api/health doit retourner le statut healthy', async () => {
     const response = await request(app).get('/api/health');
     
-    expect(response.status).toBe(200);
+    expect(response.status).toBe(500); // Cassé intentionnellement pour tester la protection
     expect(response.body.status).toBe('healthy');
   });
 
