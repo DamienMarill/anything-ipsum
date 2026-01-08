@@ -8,7 +8,7 @@
     "build": "nx build",
     "build:prod": "nx build --configuration production",
     "watch": "nx build --watch --configuration development",
-    "test": "nx test",
+    "test": "jest",
     "serve:ssr:anything-ipsum": "node dist/anything-ipsum/server/server.mjs",
     "dev": "nx serve --open",
     "lint": "nx lint",

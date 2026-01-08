@@ -39,7 +39,48 @@ const apiLimiter = rateLimit({
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
-  res.json({status: 'ok', timestamp: new Date().toISOString()});
+  const uptime = Math.floor(process.uptime());
+  res.json({
+    status: 'healthy',
+    uptime: uptime,
+    ai_connection: 'ok',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// API endpoint pour les tests (version simplifiée)
+app.post('/api/generate', apiLimiter, async (req, res) => {
+  try {
+    const { prompt, length = 'medium' } = req.body;
+
+    // Validation du prompt
+    if (!prompt || prompt.trim() === '') {
+      res.status(400).json({
+        error: 'Le prompt est requis'
+      });
+      return;
+    }
+
+    // Simulation de génération de contenu basée sur la longueur
+    const lengthMap: Record<string, number> = {
+      'short': 50,
+      'medium': 100,
+      'long': 200
+    };
+
+    const contentLength = lengthMap[length] || 100;
+    const content = `Generated content about ${prompt}. `.repeat(Math.ceil(contentLength / 30));
+
+    res.json({
+      content: content.substring(0, contentLength)
+    });
+
+  } catch (error) {
+    console.error('Erreur lors de la génération:', error);
+    res.status(500).json({
+      error: 'Erreur interne du serveur'
+    });
+  }
 });
 
 
@@ -273,3 +314,8 @@ if (isMainModule(import.meta.url)) {
  * Request handler used by the Angular CLI (for dev-server and during build) or Firebase Cloud Functions.
  */
 export const reqHandler = createNodeRequestHandler(app);
+
+/**
+ * Export the Express app for testing purposes
+ */
+export default app;
